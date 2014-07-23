@@ -2,7 +2,7 @@
 <head>
 <title>Blocks.js Sample Page</title>
 <script src="jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.0.6/phaser.min.js"></script>
+<script src="phaser.js"></script>
 <script src="blocks.js"></script>
 </head>
 <body>
@@ -11,15 +11,34 @@
 window.project = new blocks.project();
 var sprite = project.sprites.add("bush.png", 100, 100);
 var sprite2 = project.sprites.add("shrooms.png", 300, 100);
+var backdrop = project.stage.backdrops.add("backdrop","backdrop.png")
 
 sprite.clicked(function (src)
     {
-      src.move(10);
+      //src.move(50);
+    src.game_sprite.body.velocity.x = 100;
+
+    
     });
 
 sprite2.clicked(function (src)
     {
-      src.move(5);
+      //src.move(5);
+    });
+
+var myColor = new blocks.color(99,55,53,255);
+sprite.when_touching_color(myColor, function(sprite)
+    {
+    console.log("touching color!");
+    sprite.hide();
+
+
+    });
+sprite2.when_touching(sprite, function(s1, s2)
+    {
+      //s2.game_sprite.body.velocity.x = -50;
+      //s1.move(10);
+
     });
 
 project.green_flag.clicked(function ()
