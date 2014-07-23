@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Blocks.js Sample Page</title>
+<script src="jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.0.6/phaser.min.js"></script>
+<script src="blocks.js"></script>
+</head>
+<body>
+<h1>Sample blocks.js</h1>
+<script type="text/javascript">
+window.project = new blocks.project();
+var sprite = project.sprites.add("bush.png", 100, 100);
+var sprite2 = project.sprites.add("shrooms.png", 300, 100);
+
+sprite.clicked(function (src)
+    {
+      src.move(10);
+    });
+
+sprite2.clicked(function (src)
+    {
+      src.move(5);
+    });
+
+project.green_flag.clicked(function ()
+    {
+      sprite.move(10);
+    });
+
+$(document).ready(function ()
+    {
+    project.start();
+    $("#green_flag").click(function ()
+      {
+        window.project.green_flag.click();
+      });
+
+    });
+</script>
+
+<input id="green_flag" type="button" value="Green Flag">
+<div id="project"></div>
+</body>
+</html>
