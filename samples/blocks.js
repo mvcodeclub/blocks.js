@@ -266,7 +266,7 @@ blocks.project = function(parent)
               // if our color is in any of the rows
               // kind of a hack, but oh well
               var context = game.canvas.getContext("2d");
-              var boundaryWidth = 5
+              var boundaryWidth = 2 
               var imageData = context.getImageData(sprite.game_sprite.body.x - boundaryWidth, sprite.game_sprite.body.y - boundaryWidth, sprite.game_sprite.width + boundaryWidth * 2, sprite.game_sprite.height + boundaryWidth * 2);
               if (cb.color.inImageDataBoundary(imageData, sprite.game_sprite.width, sprite.game_sprite.height, boundaryWidth, 10))
               {

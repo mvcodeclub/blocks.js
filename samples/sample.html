@@ -9,33 +9,41 @@
 <h1>Sample blocks.js</h1>
 <script type="text/javascript">
 window.project = new blocks.project();
-var sprite = project.sprites.add("bush.png", 100, 100);
-var sprite2 = project.sprites.add("shrooms.png", 300, 100);
-var backdrop = project.stage.backdrops.add("backdrop","backdrop.png")
+var sprite = project.sprites.add("bush.png", 300, 100);
+var sprite2 = project.sprites.add("shrooms.png", 400, 100);
+var backdrop = project.stage.backdrops.add("backdrop","maze.png")
 
 sprite.clicked(function (src)
     {
       //src.move(50);
-    src.game_sprite.body.velocity.x = 100;
+    src.game_sprite.body.velocity.x = -100;
 
     
     });
 
 sprite2.clicked(function (src)
     {
+      src.game_sprite.body.velocity.y = 100;
       //src.move(5);
     });
 
+var maze_wall = new blocks.color(0,0,0,255);
 var myColor = new blocks.color(99,55,53,255);
-sprite.when_touching_color(myColor, function(sprite)
+sprite2.when_touching_color(maze_wall, function(sprite)
+    {
+    sprite.game_sprite.body.velocity.y = sprite.game_sprite.body.velocity.y * -1;
+
+    });
+sprite.when_touching_color(maze_wall, function(sprite)
     {
     console.log("touching color!");
-    sprite.hide();
+    sprite.game_sprite.body.velocity.x = sprite.game_sprite.body.velocity.x * -1;
 
 
     });
 sprite2.when_touching(sprite, function(s1, s2)
     {
+      s1.hide();
       //s2.game_sprite.body.velocity.x = -50;
       //s1.move(10);
 
