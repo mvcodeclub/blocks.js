@@ -12,12 +12,14 @@ window.project = new blocks.project();
 var sprite = project.sprites.add("bush.png", 300, 100);
 var sprite2 = project.sprites.add("shrooms.png", 400, 100);
 var backdrop = project.stage.backdrops.add("backdrop","maze.png")
+var sound = project.sounds.add("meow", "meow.wav");
+
 
 sprite.clicked(function (src)
     {
       //src.move(50);
+    sound.play();
     src.game_sprite.body.velocity.x = -100;
-
     
     });
 
@@ -34,13 +36,14 @@ sprite2.when_touching_color(maze_wall, function(sprite)
     sprite.game_sprite.body.velocity.y = sprite.game_sprite.body.velocity.y * -1;
 
     });
+
 sprite.when_touching_color(maze_wall, function(sprite)
     {
     console.log("touching color!");
     sprite.game_sprite.body.velocity.x = sprite.game_sprite.body.velocity.x * -1;
 
-
     });
+
 sprite2.when_touching(sprite, function(s1, s2)
     {
       s1.hide();

@@ -66,9 +66,20 @@ blocks.color = function(r,g,b,a)
 }
 
 
+blocks.sound = function(sprite, name, url)
+{
+  this.sprite = sprite;
+  this.name = name;
+  this.url = url;
+  this.play = function()
+  {
+    this.game_sound.play();
+  }
+}
 
 blocks.sprite = function(project, default_costume_url, x, y)
 {
+    var self = this;
     this.click_callbacks = [];
     this.touching_callbacks = [];
     this.touching_color_callbacks = [];
@@ -80,11 +91,11 @@ blocks.sprite = function(project, default_costume_url, x, y)
       name: default_costume_url,
       url: default_costume_url
     }];
-
     this.move = function(steps)
     {
       this.game_sprite.body.x += steps;
     };
+
 
     this.clicked = function(callback)
     {
@@ -161,10 +172,24 @@ blocks.stage = function(project)
 
 blocks.project = function(parent)
 {
+  var self = this;
   this.parent = parent;
   var game = {};
 
   var sprite_list = [];
+
+  this._sounds = [];
+
+  this.sounds = {
+    add: function(name, url)
+    {
+      var sound = new blocks.sound(self, name, url);
+      self._sounds.push(sound);
+      return sound;
+    }
+    };
+
+
 
   var collision_callback = function(obj1, obj2)
   {
@@ -190,14 +215,22 @@ blocks.project = function(parent)
   
   };
 
+
   this.preload = function()
   {
+
+    self._sounds.forEach(function(sound)
+      {
+        game.load.audio(sound.name, [sound.url]);
+      });
+
     sprite_list.forEach(function(sprite)
         {
           sprite.costumes.forEach(function(costume)
             {
               game.load.image(costume.name, costume.url);
             });
+
         });
 
     _stage._backdrops.forEach(function(backdrop)
@@ -210,6 +243,11 @@ blocks.project = function(parent)
   this.create = function()
   {
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    self._sounds.forEach(function(sound)
+      {
+        sound.game_sound = game.add.audio(sound.name);
+      });
+
     _stage._backdrops.forEach(function(backdrop)
         {
           game.add.sprite(0,0,backdrop.name);
@@ -298,7 +336,6 @@ blocks.project = function(parent)
             cb();
           });
     }
-
 
   };
 }
