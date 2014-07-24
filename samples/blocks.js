@@ -83,6 +83,7 @@ blocks.sprite = function(project, default_costume_url, x, y)
     this.click_callbacks = [];
     this.touching_callbacks = [];
     this.touching_color_callbacks = [];
+    this.key_callbacks = [];
     this.name = default_costume_url;
     this.x = x;
     this.y = y;
@@ -96,11 +97,18 @@ blocks.sprite = function(project, default_costume_url, x, y)
       this.game_sprite.body.x += steps;
     };
 
-
     this.clicked = function(callback)
     {
       this.click_callbacks.push(callback);
     };
+
+    this.when_key_is_pressed = function(keycode, callback)
+    {
+      this.key_callbacks.push({
+        keycode: keycode,
+        callback: callback
+      });
+    }
 
     this.when_touching = function(sprite1, callback)
     {
@@ -263,6 +271,15 @@ blocks.project = function(parent)
           game_sprite.body.immovable = true;
           game_sprite.block_sprite = sprite;
           sprite.game_sprite = game_sprite;
+          sprite.key_callbacks.forEach(function (cb)
+            {
+              cb.game_key = game.input.keyboard.addKey(cb.keycode);
+              cb.game_key.onDown.add(function(key)
+                {
+                  cb.callback(sprite,key);
+                }, this);
+
+            });
         });
 
     game.input.onDown.add(logColor, this);
@@ -299,7 +316,6 @@ blocks.project = function(parent)
 
           sprite.touching_color_callbacks.forEach(function (cb)
             {
-              // how this will work (it doesn't yet)
               // just check row to the left, right top and bottom
               // if our color is in any of the rows
               // kind of a hack, but oh well

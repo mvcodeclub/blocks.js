@@ -14,6 +14,30 @@ var sprite2 = project.sprites.add("shrooms.png", 400, 100);
 var backdrop = project.stage.backdrops.add("backdrop","maze.png")
 var sound = project.sounds.add("meow", "meow.wav");
 
+sprite.when_key_is_pressed(Phaser.Keyboard.UP, function (src, key)
+    {
+      sprite.game_sprite.body.velocity.y -= 10;
+    });
+
+sprite.when_key_is_pressed(Phaser.Keyboard.DOWN, function (src, key)
+    {
+      sprite.game_sprite.body.velocity.y += 10;
+    });
+
+sprite.when_key_is_pressed(Phaser.Keyboard.LEFT, function (src, key)
+    {
+      sprite.game_sprite.body.velocity.x -= 10;
+    });
+
+sprite.when_key_is_pressed(Phaser.Keyboard.RIGHT, function (src, key)
+    {
+      sprite.game_sprite.body.velocity.x += 10;
+    });
+sprite.when_key_is_pressed(Phaser.Keyboard.A, function (src, key)
+    {
+      sound.play();
+      console.log("something");
+    });
 
 sprite.clicked(function (src)
     {
