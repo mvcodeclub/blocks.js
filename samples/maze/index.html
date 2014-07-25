@@ -55,18 +55,23 @@ sprite2.clicked(function (src)
 
 var maze_wall = new blocks.color(0,0,0,255);
 var myColor = new blocks.color(99,55,53,255);
-sprite2.when_touching_color(maze_wall, function(sprite)
+sprite2.when_touching_color(maze_wall, function(sprite, touching)
     {
     sprite.game_sprite.body.velocity.y = sprite.game_sprite.body.velocity.y * -1;
     //sprite.game_sprite.body.velocity.x = sprite.game_sprite.body.velocity.x * -1;
 
     });
 
-sprite.when_touching_color(maze_wall, function(sprite)
+sprite.when_touching_color(maze_wall, function(sprite, touching)
     {
-    console.log("touching color!");
-    sprite.game_sprite.body.velocity.y = sprite.game_sprite.body.velocity.y * -1;
-    //sprite.game_sprite.body.velocity.x = sprite.game_sprite.body.velocity.x * -1;
+    if (touching == blocks.color.TOUCH_TOP || touching == blocks.color.TOUCH_BOTTOM)
+    {
+      sprite.game_sprite.body.velocity.y = sprite.game_sprite.body.velocity.y * -1;
+    }
+    else
+    {
+      sprite.game_sprite.body.velocity.x = sprite.game_sprite.body.velocity.x * -1;
+    }
 
     });
 

@@ -19,6 +19,11 @@ blocks.backdrop = function(stage, name, url)
 
 blocks.color = function(r,g,b,a)
 {
+  blocks.color.TOUCH_TOP = 1;
+  blocks.color.TOUCH_BOTTOM = 2;
+  blocks.color.TOUCH_LEFT = 3;
+  blocks.color.TOUCH_RIGHT = 4;
+  
   this.r = r;
   this.g = g;
   this.b = b;
@@ -57,11 +62,29 @@ blocks.color = function(r,g,b,a)
       if (is_middle_column && is_middle_row)
         continue;
 
+      // ignore the corners
+      if (colNum == 0 && rowNum == 0)
+        continue;
 
-      var touching_bottom = false;
-      if (rowNum >= height + boundaryWidth)
-        touching_bottom = true;
+      if (colNum == bmpWidth && rowNum == 0)
+        continue;
 
+      if (colNum == 0 && rowNum == height + boundaryWidth)
+        continue;
+
+      if (colNum == bmpWidth && rowNum == height + boundaryWidth)
+        continue;
+
+
+      var touching = false;
+      if (rowNum < boundaryWidth)
+        touching = blocks.color.TOUCH_TOP;
+      else if (rowNum >= height + boundaryWidth )
+        touching = blocks.color.TOUCH_BOTTOM;
+      else if (colNum < boundaryWidth)
+        touching = blocks.color.TOUCH_LEFT;
+      else
+        touching = blocks.color.TOUCH_RIGHT;
 
 
       var r = imageData.data[i]
@@ -73,12 +96,11 @@ blocks.color = function(r,g,b,a)
           && this.inRange(this.g,g,colorWidth)  
           && this.inRange(this.b,b,colorWidth))
       {
-        return true;
-
+        return touching;
       }
     }
 
-    return false;
+    return blocks.color.TOUCH_NONE;
   }
 }
 
@@ -225,13 +247,11 @@ blocks.project = function(parent)
               // if our color is in any of the rows
               // kind of a hack, but oh well
               var context = game.canvas.getContext("2d");
-              var boundaryWidth = 2 
+              var boundaryWidth = 1 
               var imageData = context.getImageData(sprite.game_sprite.body.x - boundaryWidth, sprite.game_sprite.body.y - boundaryWidth, sprite.game_sprite.width + boundaryWidth * 2, sprite.game_sprite.height + boundaryWidth * 2);
-              if (cb.color.inImageDataBoundary(imageData, sprite.game_sprite.width, sprite.game_sprite.height, boundaryWidth, 10))
-              {
-                cb.cb(sprite);
-              }
-
+              var touching = cb.color.inImageDataBoundary(imageData, sprite.game_sprite.width, sprite.game_sprite.height, boundaryWidth, 10);
+              if (touching != blocks.color.TOUCH_NONE)
+                cb.cb(sprite, touching);
 
             });
         });
@@ -321,9 +341,9 @@ blocks.sprite = function(project, default_costume_url, x, y)
     {
       this.touching_color_callbacks.push({
         color: color,
-        cb: function(obj1)
+        cb: function(obj1, touching)
         {
-          callback(obj1);
+          callback(obj1, touching);
         }
       });
     };

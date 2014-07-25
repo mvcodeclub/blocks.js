@@ -46,9 +46,9 @@ blocks.sprite = function(project, default_costume_url, x, y)
     {
       this.touching_color_callbacks.push({
         color: color,
-        cb: function(obj1)
+        cb: function(obj1, touching)
         {
-          callback(obj1);
+          callback(obj1, touching);
         }
       });
     };

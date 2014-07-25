@@ -1,5 +1,10 @@
 blocks.color = function(r,g,b,a)
 {
+  blocks.color.TOUCH_TOP = 1;
+  blocks.color.TOUCH_BOTTOM = 2;
+  blocks.color.TOUCH_LEFT = 3;
+  blocks.color.TOUCH_RIGHT = 4;
+  
   this.r = r;
   this.g = g;
   this.b = b;
@@ -38,11 +43,29 @@ blocks.color = function(r,g,b,a)
       if (is_middle_column && is_middle_row)
         continue;
 
+      // ignore the corners
+      if (colNum == 0 && rowNum == 0)
+        continue;
 
-      var touching_bottom = false;
-      if (rowNum >= height + boundaryWidth)
-        touching_bottom = true;
+      if (colNum == bmpWidth && rowNum == 0)
+        continue;
 
+      if (colNum == 0 && rowNum == height + boundaryWidth)
+        continue;
+
+      if (colNum == bmpWidth && rowNum == height + boundaryWidth)
+        continue;
+
+
+      var touching = false;
+      if (rowNum < boundaryWidth)
+        touching = blocks.color.TOUCH_TOP;
+      else if (rowNum >= height + boundaryWidth )
+        touching = blocks.color.TOUCH_BOTTOM;
+      else if (colNum < boundaryWidth)
+        touching = blocks.color.TOUCH_LEFT;
+      else
+        touching = blocks.color.TOUCH_RIGHT;
 
 
       var r = imageData.data[i]
@@ -54,11 +77,11 @@ blocks.color = function(r,g,b,a)
           && this.inRange(this.g,g,colorWidth)  
           && this.inRange(this.b,b,colorWidth))
       {
-        return true;
+        return touching;
       }
     }
 
-    return false;
+    return blocks.color.TOUCH_NONE;
   }
 }
 
