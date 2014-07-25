@@ -19,6 +19,10 @@ module.exports = function(grunt) {
       dist: {
         src: ['src/blocks.js','src/modules/*.js'],
         dest: 'dist/<%= pkg.name %>.js'
+      },
+      dist: {
+        src: ['src/blocks.js','src/modules/*.js'],
+        dest: 'samples/<%= pkg.name %>.js'
       }
     },
     uglify: {

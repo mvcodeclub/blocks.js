@@ -1,5 +1,3 @@
-/*! blocks - v0.1.0 - 2014-07-25
-* Copyright (c) 2014 Douglas Tarr; Licensed  */
 // this is the blocks.js file
 // (c) 2014 Command Z Labs Inc
 //
@@ -7,14 +5,6 @@ var blocks = blocks || {
 
 
 };
-
-blocks.backdrop = function(stage, name, url)
-{
-  this.stage = stage;
-  this.name = name;
-  this.url = url;
-
-}
 
 
 blocks.color = function(r,g,b,a)
@@ -73,6 +63,118 @@ blocks.color = function(r,g,b,a)
 
 
   }
+}
+
+
+blocks.sound = function(sprite, name, url)
+{
+  this.sprite = sprite;
+  this.name = name;
+  this.url = url;
+  this.play = function()
+  {
+    this.game_sound.play();
+  }
+}
+
+blocks.sprite = function(project, default_costume_url, x, y)
+{
+    var self = this;
+    this.click_callbacks = [];
+    this.touching_callbacks = [];
+    this.touching_color_callbacks = [];
+    this.key_callbacks = [];
+    this.name = default_costume_url;
+    this.x = x;
+    this.y = y;
+    this.costumes = [{
+      id: 1,
+      name: default_costume_url,
+      url: default_costume_url
+    }];
+    this.move = function(steps)
+    {
+      this.game_sprite.body.x += steps;
+    };
+
+    this.clicked = function(callback)
+    {
+      this.click_callbacks.push(callback);
+    };
+
+    this.when_key_is_pressed = function(keycode, callback)
+    {
+      this.key_callbacks.push({
+        keycode: keycode,
+        callback: callback
+      });
+    }
+
+    this.when_touching = function(sprite1, callback)
+    {
+      this.touching_callbacks.push({
+        sprite: sprite1,
+        cb: function(obj1, obj2)
+        {
+          callback(obj1.block_sprite, obj2.block_sprite);
+        }
+      });
+    };
+
+    this.when_touching_color = function(color, callback)
+    {
+      this.touching_color_callbacks.push({
+        color: color,
+        cb: function(obj1)
+        {
+          callback(obj1);
+        }
+      });
+    };
+
+    this.hide = function()
+    {
+      this.game_sprite.visible = false;
+
+    }
+
+    this.show = function()
+    {
+      this.game_sprite.visible = true;
+
+    }
+
+    this.clone = function()
+    {
+      // todo: clone all the behaviors here?
+
+    }
+
+}
+
+blocks.backdrop = function(stage, name, url)
+{
+  this.stage = stage;
+  this.name = name;
+  this.url = url;
+
+}
+
+blocks.stage = function(project)
+{
+  var self = this;
+  this.project = project;
+  this._backdrops  = [];
+
+  this.backdrops  = {
+    add: function(name, url)
+    {
+      var bg = new blocks.backdrop(self, name, url);
+      self._backdrops.push(bg);
+    }
+
+  }
+
 }
 
 
@@ -252,109 +354,5 @@ blocks.project = function(parent)
     }
 
   };
-}
-
-blocks.sound = function(sprite, name, url)
-{
-  this.sprite = sprite;
-  this.name = name;
-  this.url = url;
-  this.play = function()
-  {
-    this.game_sound.play();
-  }
-}
-
-
-blocks.sprite = function(project, default_costume_url, x, y)
-{
-    var self = this;
-    this.click_callbacks = [];
-    this.touching_callbacks = [];
-    this.touching_color_callbacks = [];
-    this.key_callbacks = [];
-    this.name = default_costume_url;
-    this.x = x;
-    this.y = y;
-    this.costumes = [{
-      id: 1,
-      name: default_costume_url,
-      url: default_costume_url
-    }];
-    this.move = function(steps)
-    {
-      this.game_sprite.body.x += steps;
-    };
-
-    this.clicked = function(callback)
-    {
-      this.click_callbacks.push(callback);
-    };
-
-    this.when_key_is_pressed = function(keycode, callback)
-    {
-      this.key_callbacks.push({
-        keycode: keycode,
-        callback: callback
-      });
-    }
-
-    this.when_touching = function(sprite1, callback)
-    {
-      this.touching_callbacks.push({
-        sprite: sprite1,
-        cb: function(obj1, obj2)
-        {
-          callback(obj1.block_sprite, obj2.block_sprite);
-        }
-      });
-    };
-
-    this.when_touching_color = function(color, callback)
-    {
-      this.touching_color_callbacks.push({
-        color: color,
-        cb: function(obj1)
-        {
-          callback(obj1);
-        }
-      });
-    };
-
-    this.hide = function()
-    {
-      this.game_sprite.visible = false;
-
-    }
-
-    this.show = function()
-    {
-      this.game_sprite.visible = true;
-
-    }
-
-    this.clone = function()
-    {
-      // todo: clone all the behaviors here?
-
-    }
-
-}
-
-blocks.stage = function(project)
-{
-  var self = this;
-  this.project = project;
-  this._backdrops  = [];
-
-  this.backdrops  = {
-    add: function(name, url)
-    {
-      var bg = new blocks.backdrop(self, name, url);
-      self._backdrops.push(bg);
-    }
-
-  }
-
 }
 
