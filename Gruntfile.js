@@ -20,7 +20,7 @@ module.exports = function(grunt) {
         src: ['src/blocks.js','src/modules/*.js'],
         dest: 'dist/<%= pkg.name %>.js'
       },
-      dist: {
+      samples: {
         src: ['src/blocks.js','src/modules/*.js'],
         dest: 'samples/<%= pkg.name %>.js'
       }

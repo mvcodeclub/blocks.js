@@ -41,22 +41,28 @@ blocks.color = function(r,g,b,a)
 
   this.inImageDataBoundary = function(imageData, width, height, boundaryWidth, colorWidth)
   {
+    // we are checking if this color is in the border of this bitmap, +/- the colorWidth
     var isBoundary = false;
-    for (var i = 0; i < imageData.data.length / 4; i+=4)
+    var bmpWidth = (width + (boundaryWidth * 2));
+    for (var i = 0; i < imageData.data.length; i+=4)
     {
-      bmpWidth = width + (boundaryWidth * 2);
-      var rowNum = Math.floor(i / bmpWidth);
-      var colNum = i % bmpWidth;
+      var rowNum = Math.floor(i / (bmpWidth * 4));
+      var colNum = (i % (bmpWidth)) / 4;
       
       // if it's in a middle column ...
-      if (colNum > boundaryWidth && colNum < width + boundaryWidth)
-      {
-        // and it's in a middle row ...
-        if (rowNum > boundaryWidth && rowNum < height + boundaryWidth)
-          // ignore it
-          continue;
+      is_middle_column = (colNum > boundaryWidth && colNum < width + boundaryWidth);
+      // and it's in a middle row ...
+      is_middle_row = (rowNum > boundaryWidth && rowNum < height + boundaryWidth);
 
-      }
+      if (is_middle_column && is_middle_row)
+        continue;
+
+
+      var touching_bottom = false;
+      if (rowNum >= height + boundaryWidth)
+        touching_bottom = true;
+
+
 
       var r = imageData.data[i]
       var g = imageData.data[i+1]
@@ -66,12 +72,13 @@ blocks.color = function(r,g,b,a)
       if (this.inRange(this.r,r,colorWidth)  
           && this.inRange(this.g,g,colorWidth)  
           && this.inRange(this.b,b,colorWidth))
+      {
         return true;
+
+      }
     }
 
     return false;
-
-
   }
 }
 
