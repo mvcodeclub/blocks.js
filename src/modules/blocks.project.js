@@ -17,8 +17,6 @@ blocks.project = function(parent)
     }
     };
 
-
-
   var collision_callback = function(obj1, obj2)
   {
 
@@ -83,21 +81,26 @@ blocks.project = function(parent)
 
     sprite_list.forEach(function(sprite)
         {
-          var game_sprite = game.add.sprite(sprite.x,sprite.y,sprite.costumes[0].name);
+          sprite.sprite_group = game.add.group();
+          var game_sprite = sprite.sprite_group.create(sprite.x, sprite.y, sprite.costumes[0].name);
           game_sprite.anchor.setTo(0.5,0.5);
           game_sprite.inputEnabled = true;
           game_sprite.input.start();
           game.physics.enable(game_sprite, Phaser.Physics.ARCADE);
           game_sprite.body.immovable = true;
           game_sprite.block_sprite = sprite;
+          // invisible text
+          var style = { font : "12px Arial", "background-color": "white", color: "black"};
+          sprite.say_text = game.add.text(sprite.x, sprite.y - 10, "", style, sprite.sprite_group);
           sprite.game_sprite = game_sprite;
           sprite.key_callbacks.forEach(function (cb)
             {
               cb.game_key = game.input.keyboard.addKey(cb.keycode);
-              cb.game_key.onDown.add(function(key)
+              /*cb.game_key.onDown.add(function(key)
                 {
                   cb.callback(sprite,key);
                 }, this);
+                */
 
             });
         });
@@ -121,6 +124,13 @@ blocks.project = function(parent)
 
     sprite_list.forEach(function(sprite)
         {
+          if (sprite.move_steps)
+          { 
+            var point = sprite.game_sprite.game.physics.arcade.velocityFromAngle(sprite.game_sprite.angle, sprite.move_steps); 
+            sprite.game_sprite.body.x += point.x;
+            sprite.game_sprite.body.y += point.y;
+            sprite.move_steps = 0;
+          }
           if (sprite.game_sprite.input.checkPointerDown(game.input.activePointer))
           {
             sprite.click_callbacks.forEach(function(cb)
@@ -128,6 +138,21 @@ blocks.project = function(parent)
                 cb(sprite);
               });
           }
+
+          sprite.say_text.x = sprite.game_sprite.body.x;
+          sprite.say_text.y = sprite.game_sprite.body.y - 15;
+
+
+          sprite.key_callbacks.forEach(function (cb)
+            {
+              if (cb.game_key.isDown)
+              {
+                // let them hold it down, but only register every 5th repeat
+                if (cb.game_key.repeats % 5 == 0)
+                  cb.callback(sprite, cb.game_key);
+              }
+
+            });
 
           sprite.touching_callbacks.forEach(function (cb)
             {

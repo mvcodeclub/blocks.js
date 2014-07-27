@@ -1,21 +1,33 @@
 blocks.sprite = function(project, default_costume_url, x, y)
 {
+
+  // something
+    // init stuff
     var self = this;
-    this.click_callbacks = [];
-    this.touching_callbacks = [];
-    this.touching_color_callbacks = [];
-    this.key_callbacks = [];
-    this.name = default_costume_url;
     this.x = x;
     this.y = y;
+    this.project= project;
     this.costumes = [{
       id: 1,
       name: default_costume_url,
       url: default_costume_url
     }];
+
+    this.click_callbacks = [];
+    this.touching_callbacks = [];
+    this.touching_color_callbacks = [];
+    this.key_callbacks = [];
+    this.clones = [];
+
+
     this.move = function(steps)
     {
-      this.game_sprite.body.x += steps;
+      this.move_steps = steps;
+    };
+
+    this.point_in_direction = function(angle)
+    {
+      this.game_sprite.angle = angle;
     };
 
     this.clicked = function(callback)
@@ -41,6 +53,11 @@ blocks.sprite = function(project, default_costume_url, x, y)
         }
       });
     };
+
+    this.say = function(text)
+    {
+      self.say_text.setText(text);
+    }
 
     this.when_touching_color = function(color, callback)
     {
